@@ -1,0 +1,99 @@
+/* Base Progress Bar Container */
+.progressContainer {
+  display: flex;
+  align-items: center;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 200px;
+  background-color: #f3f3f3;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  height: 16px;
+  margin-right: 50px; /* Add space for the percentage text */
+}
+
+/* Default Size */
+.default {
+  height: 16px;
+}
+
+/* Small Size */
+.small {
+  height: 8px;
+}
+
+/* Base Progress Indicator */
+.progressBar {
+  height: 100%;
+  transition: width 0.3s ease;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #1890ff;
+}
+
+/* Status Variants */
+
+/* Normal */
+.normal .progressBar {
+  background-color: #1890ff;
+}
+
+/* Success */
+.success .progressBar {
+  background-color: #52c41a;
+}
+
+/* Exception */
+.exception .progressBar {
+  background-color: #ff4d4f;
+}
+
+/* Active */
+.active .progressBar {
+  background-color: #1890ff;
+  animation: progressActive 2s linear infinite;
+}
+
+/* Active Animation */
+@keyframes progressActive {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+/* Percentage Text */
+.percentText {
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+/* Icon Styles */
+.icon {
+  margin-left: 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.successIcon {
+  color: #52c41a;
+}
+
+.exceptionIcon {
+  color: #ff4d4f;
+}

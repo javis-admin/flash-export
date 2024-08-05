@@ -1,0 +1,97 @@
+/* Base Button Style */
+.button {
+    display: inline-block;
+    font-size: 14px;
+    padding: 0 15px;
+    height: 32px;
+    line-height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  /* Primary Button */
+  .primary {
+    color: #fff;
+    background-color: #1890ff;
+    border-color: #1890ff;
+  }
+  
+  .primary:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+  }
+  
+  .primary:active {
+    background-color: #096dd9;
+    border-color: #096dd9;
+  }
+  
+  /* Default Button */
+  .default {
+    color: rgba(0, 0, 0, 0.85);
+    background-color: #fff;
+    border-color: #d9d9d9;
+  }
+  
+  .default:hover {
+    color: #40a9ff;
+    border-color: #40a9ff;
+  }
+  
+  .default:active {
+    color: #096dd9;
+    border-color: #096dd9;
+  }
+  
+  /* Dashed Button */
+  .dashed {
+    color: rgba(0, 0, 0, 0.85);
+    background-color: #fff;
+    border-style: dashed;
+    border-color: #d9d9d9;
+  }
+  
+  .dashed:hover {
+    color: #40a9ff;
+    border-color: #40a9ff;
+  }
+  
+  .dashed:active {
+    color: #096dd9;
+    border-color: #096dd9;
+  }
+  
+  /* Text Button */
+  .text {
+    color: #1890ff;
+    background-color: transparent;
+    border-color: transparent;
+  }
+  
+  .text:hover {
+    color: #40a9ff;
+  }
+  
+  .text:active {
+    color: #096dd9;
+  }
+  
+  /* Link Button */
+  .link {
+    color: #1890ff;
+    background-color: transparent;
+    border-color: transparent;
+  }
+  
+  .link:hover {
+    color: #40a9ff;
+    text-decoration: underline;
+  }
+  
+  .link:active {
+    color: #096dd9;
+  }
+  
