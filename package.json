@@ -1,7 +1,7 @@
 {
-  "name": "flash-export",
+  "name": "@okjavis/flash-export",
   "version": "1.0.0",
-  "description": "",
+  "description": "blazing fast client-side data export utility",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,7 @@
     "url": "git+https://github.com/javis-admin/flash-export.git"
   },
   "author": "Anand Jee Choubey",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/javis-admin/flash-export/issues"
   },
