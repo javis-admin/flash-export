@@ -25,3 +25,17 @@ export const filterKeys = (arr, keys) => {
     }, {});
   });
 };
+
+// export const callWork
+export const getFilteredData = (data, columns = [], substituteValues = {}) => {
+  const filteredData = columns.length ? filterKeys(data, columns) : data;
+  const temp = [];
+  filteredData.forEach((element) => {
+    Object.keys(element).forEach((key) => {
+      const val = element[key];
+      element[key] = validateAndReturnData(key, val, substituteValues);
+    });
+    temp.push(element);
+  });
+  return temp;
+};

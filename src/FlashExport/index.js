@@ -1,8 +1,11 @@
 import React from "react";
 import { saveAs } from "file-saver";
-import { filterKeys, validateAndReturnData } from "./utils";
+import { getFilteredData } from "./utils";
 import ProgressBar from "./ProgressBar";
 import Button from "./Button";
+import WebWorker from "./WebWorker";
+import workerObj from "../../public/worker";
+// import { createWorkbook } from "./createExcelWorkbook"
 
 const FlashExport = ({
   data,
@@ -12,59 +15,46 @@ const FlashExport = ({
 }) => {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-  const [worker, setWorker] = React.useState(
-    new Worker(new URL("./worker.js", import.meta.url))
-  );
-  const [multiDataset, setMultiDataset] = React.useState([]);
+  const [worker, setWorker] = React.useState(null);
+
+  const multiDataset = getFilteredData(data, columns, substituteValues);
 
   React.useEffect(() => {
-    const filteredData = columns.length ? filterKeys(data, columns) : data;
-    const temp = [];
-    filteredData.forEach((element) => {
-      Object.keys(element).forEach((key) => {
-        const val = element[key];
-        element[key] = validateAndReturnData(key, val, substituteValues);
-      });
-      temp.push(element);
-    });
-
-    setMultiDataset(temp);
-  }, [data, columns, substituteValues]);
+    const myWorker = new WebWorker(workerObj);
+    myWorker.addEventListener("message", (event) => handleDownload(event.data));
+    setWorker(myWorker);
+  }, []);
 
   const handleClick = () => {
     setProcessing(true);
-    worker.postMessage({ multiDataset, columns });
+    worker.postMessage({ multiDataset });
     setProgress(40);
   };
 
   const handleTerminate = () => {
     worker.terminate();
-    setWorker(new Worker(new URL("./worker.js", import.meta.url)));
-    setProgress(101);
-    setTimeout(() => {
-      setProcessing(false);
-      setProgress(0);
-    }, 1000);
+    const myWorker = new WebWorker(workerObj);
+    myWorker.addEventListener("message", (event) => handleDownload(event.data));
+    setWorker(myWorker);
+    setProcessing(false);
+    setProgress(0);
+    // setTimeout(() => {
+    // }, 1000);
   };
 
-  React.useEffect(() => {
-    // Handle messages received from the worker
-    worker.onmessage = (e) => {
-      setProgress(90);
-      saveAs(e.data, fileName + ".xlsx");
-      setProgress(100);
-      setTimeout(() => {
-        setProcessing(false);
-        setProgress(0);
-      }, 1000);
-    };
-  }, [worker, fileName]);
+  const handleDownload = (data) => {
+    saveAs(data, fileName + ".xlsx");
+    setProcessing(false);
+    setProgress(0);
+  };
 
   if (!processing) {
     return <Button onClick={handleClick}>Export</Button>;
   }
+
   return (
     <div style={{ width: 240, display: "inline-flex", alignItems: "center" }}>
+      <Button onClick={handleTerminate}>Cancel</Button>
       <ProgressBar
         progress={progress}
         size="small"
@@ -76,7 +66,6 @@ const FlashExport = ({
             : "active"
         }
       />
-      <Button onClick={handleTerminate}>Cancel Export</Button>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 {
   "name": "@okjavis/flash-export",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "blazing fast client-side data export utility",
   "main": "dist/index.js",
   "scripts": {
@@ -34,9 +34,7 @@
     "react-dom": "^18.3.1",
     "style-loader": "^4.0.0",
     "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-cli": "^5.1.4"
   },
   "peerDependencies": {
     "react": "^18.3.1",

@@ -27,8 +27,8 @@ const ProgressBar = ({ progress, status = "normal", size = "small" }) => {
 
   return (
     <div className={"progressContainer"}>
-      <div className={`.progress ${size} ${status}`}>
-        <div className={"progressBar"} style={{ width: `${progress}%` }} />
+      <div className={`progress ${size} ${status}`}>
+        <div className={"progressBar"} style={{ width: `${progress}%` }}></div>
       </div>
       {renderIndicator()}
     </div>
