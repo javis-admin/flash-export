@@ -13,18 +13,8 @@ module.exports = {
     library: libraryName,
   },
   externals: {
-    react: {
-      commonjs: "react",
-      commonjs2: "react",
-      amd: "React",
-      root: "React",
-    },
-    "react-dom": {
-      commonjs: "react-dom",
-      commonjs2: "react-dom",
-      amd: "ReactDOM",
-      root: "ReactDOM",
-    },
+    react: "react",
+    "react-dom": "react-dom",
   },
   module: {
     rules: [
@@ -41,8 +31,5 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
     ],
-  },
-  resolve: {
-    extensions: [".js", ".jsx"],
   },
 };
