@@ -21,7 +21,11 @@ const ProgressBar = ({ progress, status = "normal", size = "small" }) => {
           </span>
         );
       default:
-        return <span className={"percentText"}>{progress}%</span>;
+        return progress <= 100 ? (
+          <span className={"percentText"}>{progress}%</span>
+        ) : (
+          <></>
+        );
     }
   };
 
