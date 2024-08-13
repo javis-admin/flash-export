@@ -1,6 +1,8 @@
 /* Base Button Style */
 .button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     font-size: 14px;
     padding: 0 15px;
     height: 32px;
@@ -66,13 +68,14 @@
   
   /* Text Button */
   .text {
-    color: #1890ff;
-    background-color: transparent;
+    color: rgba(0, 0, 0, 0.85);
+    background-color: #fff;
     border-color: transparent;
   }
   
   .text:hover {
-    color: #40a9ff;
+    background-color: #f4f6f9;
+    color: rgba(0, 0, 0, 0.85);
   }
   
   .text:active {

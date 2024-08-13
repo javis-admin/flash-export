@@ -10,12 +10,15 @@ import Button from "./Button";
 // Worker Config
 import WebWorker from "./WebWorker";
 import workerObj from "../../public/worker";
+import Download from "./Icons/Download";
 
 const FlashExport = ({
   data,
   columns = [],
   fileName = "export-data",
-  substituteValues = {},
+  substituteValues = [],
+  type = "default",
+  showPercentage = true,
 }) => {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -32,7 +35,7 @@ const FlashExport = ({
   const handleClick = () => {
     setProcessing(true);
     worker.postMessage({ multiDataset });
-    setProgress(40);
+    setProgress(20);
     const id = setInterval(() => {
       setProgress((prevProgress) => {
         const newProgress = prevProgress + 5;
@@ -41,7 +44,7 @@ const FlashExport = ({
         }
         return newProgress;
       });
-    }, 500);
+    }, 400);
   };
 
   const handleTerminate = () => {
@@ -49,11 +52,8 @@ const FlashExport = ({
     const myWorker = new WebWorker(workerObj);
     myWorker.addEventListener("message", (event) => handleDownload(event.data));
     setWorker(myWorker);
-    setProgress(101);
-    setTimeout(() => {
-      setProgress(0);
-      setProcessing(false);
-    }, 1000);
+    setProgress(0);
+    setProcessing(false);
   };
 
   const handleDownload = (data) => {
@@ -70,14 +70,31 @@ const FlashExport = ({
   };
 
   if (!processing) {
-    return <Button onClick={handleClick}>Export</Button>;
+    return (
+      <Button type={type} onClick={handleClick}>
+        <Download />
+        {` `}Export
+      </Button>
+    );
   }
 
   return (
-    <div style={{ width: 240, display: "inline-flex", alignItems: "center" }}>
-      {progress <= 100 && <Button onClick={handleTerminate}>Cancel</Button>}
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 10,
+      }}
+    >
+      {progress <= 100 && (
+        <Button type={type} onClick={handleTerminate}>
+          <Download />
+          {` `}Cancel
+        </Button>
+      )}
       <ProgressBar
         progress={progress}
+        showPercentage={showPercentage}
         size="small"
         status={
           progress === 100

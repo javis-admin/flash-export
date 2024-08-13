@@ -1,7 +1,12 @@
 import React from "react";
 import "./ProgressBar.css";
 
-const ProgressBar = ({ progress, status = "normal", size = "small" }) => {
+const ProgressBar = ({
+  progress,
+  showPercentage,
+  status = "normal",
+  size = "small",
+}) => {
   const renderIndicator = () => {
     switch (status) {
       case "success":
@@ -34,7 +39,7 @@ const ProgressBar = ({ progress, status = "normal", size = "small" }) => {
       <div className={`progress ${size} ${status}`}>
         <div className={"progressBar"} style={{ width: `${progress}%` }}></div>
       </div>
-      {renderIndicator()}
+      {showPercentage && renderIndicator()}
     </div>
   );
 };

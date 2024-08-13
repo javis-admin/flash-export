@@ -16,14 +16,14 @@ export const validateAndReturnData = (key, val, substituteValues) => {
 };
 
 export const filterKeys = (arr, keys) => {
-  return arr.map((obj) => {
-    return keys.reduce((filteredObj, key) => {
-      if (key in obj) {
-        filteredObj[key] = obj[key];
-      }
-      return filteredObj;
-    }, {});
+  const dataset = arr.map((data) => {
+    let row = {};
+    keys.forEach((key) => {
+      row[key.title] = data[key.dataIndex];
+    });
+    return row;
   });
+  return dataset;
 };
 
 // export const callWork
