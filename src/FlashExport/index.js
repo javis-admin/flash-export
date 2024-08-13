@@ -11,6 +11,7 @@ import Button from "./Button";
 import WebWorker from "./WebWorker";
 import workerObj from "../../public/worker";
 import Download from "./Icons/Download";
+import Cancel from "./Icons/Cancel";
 
 const FlashExport = ({
   data,
@@ -19,6 +20,7 @@ const FlashExport = ({
   substituteValues = [],
   type = "default",
   showPercentage = true,
+  customProgressComponent,
 }) => {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -35,7 +37,7 @@ const FlashExport = ({
   const handleClick = () => {
     setProcessing(true);
     worker.postMessage({ multiDataset });
-    setProgress(20);
+    setProgress(0);
     const id = setInterval(() => {
       setProgress((prevProgress) => {
         const newProgress = prevProgress + 5;
@@ -44,7 +46,7 @@ const FlashExport = ({
         }
         return newProgress;
       });
-    }, 400);
+    }, 300);
   };
 
   const handleTerminate = () => {
@@ -57,6 +59,7 @@ const FlashExport = ({
   };
 
   const handleDownload = (data) => {
+    setProgress(100);
     const url = URL.createObjectURL(data);
     const a = document.createElement("a");
     a.href = url;
@@ -88,22 +91,26 @@ const FlashExport = ({
     >
       {progress <= 100 && (
         <Button type={type} onClick={handleTerminate}>
-          <Download />
+          <Cancel />
           {` `}Cancel
         </Button>
       )}
-      <ProgressBar
-        progress={progress}
-        showPercentage={showPercentage}
-        size="small"
-        status={
-          progress === 100
-            ? "success"
-            : progress === 101
-            ? "exception"
-            : "active"
-        }
-      />
+      {customProgressComponent ? (
+        customProgressComponent(progress)
+      ) : (
+        <ProgressBar
+          progress={progress}
+          showPercentage={showPercentage}
+          size="small"
+          status={
+            progress === 100
+              ? "success"
+              : progress === 101
+              ? "exception"
+              : "active"
+          }
+        />
+      )}
     </div>
   );
 };
