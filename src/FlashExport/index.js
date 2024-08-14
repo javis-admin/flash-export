@@ -33,6 +33,10 @@ const FlashExport = ({
     const myWorker = new WebWorker(workerObj);
     myWorker.addEventListener("message", (event) => handleDownload(event.data));
     setWorker(myWorker);
+
+    return () => {
+      worker.terminate();
+    };
   }, []);
 
   const handleClick = () => {
@@ -98,7 +102,8 @@ const FlashExport = ({
       )}
       {progress <= 100 && cancelBtnDisable && (
         <Button type={type} disabled>
-          Exporting...
+          <Cancel />
+          {` `}Cancel
         </Button>
       )}
       {customProgressComponent ? (
