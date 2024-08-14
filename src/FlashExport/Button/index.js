@@ -1,14 +1,21 @@
 import React from "react";
 import "./Button.css";
 
-const Button = ({ type = "default", children, onClick }) => {
+const Button = ({ type = "default", children, onClick, disabled = false }) => {
+  if (disabled) {
+    return (
+      <button className={"button disabled"} disabled>
+        {children}
+      </button>
+    );
+  }
   return (
-    <div
+    <button
       className={`button ${type.length ? type : "default"}`}
       onClick={onClick}
     >
       {children}
-    </div>
+    </button>
   );
 };
 

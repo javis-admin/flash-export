@@ -21,6 +21,7 @@ const FlashExport = ({
   type = "default",
   showPercentage = true,
   customProgressComponent,
+  cancelBtnDisable = false,
 }) => {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -89,14 +90,19 @@ const FlashExport = ({
         gap: 10,
       }}
     >
-      {progress <= 100 && (
+      {progress <= 100 && !cancelBtnDisable && (
         <Button type={type} onClick={handleTerminate}>
           <Cancel />
           {` `}Cancel
         </Button>
       )}
+      {progress <= 100 && cancelBtnDisable && (
+        <Button type={type} disabled>
+          Exporting...
+        </Button>
+      )}
       {customProgressComponent ? (
-        customProgressComponent(progress)
+        customProgressComponent(progress, handleTerminate)
       ) : (
         <ProgressBar
           progress={progress}
