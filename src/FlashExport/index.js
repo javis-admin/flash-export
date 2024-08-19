@@ -25,23 +25,25 @@ const FlashExport = ({
 }) => {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-  const [worker, setWorker] = React.useState(null);
+  const worker = React.useRef(null);
 
   const multiDataset = getFilteredData(data, columns, substituteValues);
 
   React.useEffect(() => {
     const myWorker = new WebWorker(workerObj);
     myWorker.addEventListener("message", (event) => handleDownload(event.data));
-    setWorker(myWorker);
+    worker.current = myWorker;
+  }, []);
 
+  React.useEffect(() => {
     return () => {
-      worker.terminate();
+      worker.current.terminate();
     };
   }, []);
 
   const handleClick = () => {
     setProcessing(true);
-    worker.postMessage({ multiDataset });
+    worker.current.postMessage({ multiDataset });
     setProgress(0);
     const id = setInterval(() => {
       setProgress((prevProgress) => {
@@ -55,10 +57,10 @@ const FlashExport = ({
   };
 
   const handleTerminate = () => {
-    worker.terminate();
+    worker.current.terminate();
     const myWorker = new WebWorker(workerObj);
     myWorker.addEventListener("message", (event) => handleDownload(event.data));
-    setWorker(myWorker);
+    worker.current = myWorker;
     setProgress(0);
     setProcessing(false);
   };
