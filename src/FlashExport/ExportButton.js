@@ -4,9 +4,9 @@ import Download from "./Icons/Download";
 import { useFlashExport } from "./FlashExportProvider";
 
 const ExportButton = ({ type }) => {
-  const { handleClick } = useFlashExport();
+  const { startExport } = useFlashExport();
   return (
-    <Button type={type} onClick={handleClick}>
+    <Button type={type} onClick={startExport}>
       <Download />
       {` `}Export
     </Button>
