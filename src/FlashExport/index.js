@@ -6,11 +6,12 @@ import { getFilteredData } from "./utils";
 // UI Components
 import ProgressBar from "./ProgressBar";
 import Button from "./Button";
+import ExportButton from "./ExportButton";
+import { FlashExportProvider } from "./FlashExportProvider";
 
 // Worker Config
 import WebWorker from "./WebWorker";
 import workerObj from "../../public/worker";
-import Download from "./Icons/Download";
 import Cancel from "./Icons/Cancel";
 
 const FlashExport = ({
@@ -22,6 +23,7 @@ const FlashExport = ({
   showPercentage = true,
   customProgressComponent,
   cancelBtnDisable = false,
+  children,
 }) => {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -81,10 +83,9 @@ const FlashExport = ({
 
   if (!processing) {
     return (
-      <Button type={type} onClick={handleClick}>
-        <Download />
-        {` `}Export
-      </Button>
+      <FlashExportProvider value={{ startExport: handleClick }}>
+        {children || <ExportButton type={type} />}
+      </FlashExportProvider>
     );
   }
 
