@@ -96,6 +96,7 @@ const FlashExport = ({
         alignItems: "center",
         gap: 10,
       }}
+      className="flash-export_button"
     >
       {progress <= 100 && !cancelBtnDisable && (
         <Button type={type} onClick={handleTerminate}>
