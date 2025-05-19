@@ -22,6 +22,14 @@ export default () => {
       WTF: true,
     });
 
+    const headers = Object.keys(e.data.multiDataset[0] || {});
+    headers.forEach((header, index) => {
+      const cellRef = XLSX.utils.encode_cell({ c: index, r: 0 });
+      if (!ws[cellRef]) return;
+      if (!ws[cellRef].s) ws[cellRef].s = {};
+      ws[cellRef].s.font = { bold: true };
+    });
+
     // Append the worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
     const buffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
