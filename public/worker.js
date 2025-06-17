@@ -19,7 +19,7 @@ export default () => {
     const totalRows = data.length;
 
     // Create workbook
-    const wb = XLSX.utils.book_new();
+    let wb = XLSX.utils.book_new();
     let ws;
 
     const headers = data.length > 0 ? Object.keys(data[0] || {}) : [];
