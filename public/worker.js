@@ -12,29 +12,81 @@ export default () => {
 
   self.addEventListener("message", (e) => {
     if (!e) return;
+
+    // Process data in chunks to avoid memory issues
+    const CHUNK_SIZE = 1000;
+    const data = e.data.multiDataset;
+    const totalRows = data.length;
+
+    // Create workbook
     const wb = XLSX.utils.book_new();
-    // Convert the data to a worksheet
-    const ws = XLSX.utils.json_to_sheet(e.data.multiDataset, {
-      cellStyles: true,
-      sheetStubs: true,
-      bookVBA: true,
-      cellDates: true,
-      WTF: true,
-    });
+    let ws;
 
-    const headers = Object.keys(e.data.multiDataset[0] || {});
-    headers.forEach((header, index) => {
-      const cellRef = XLSX.utils.encode_cell({ c: index, r: 0 });
-      if (!ws[cellRef]) return;
-      if (!ws[cellRef].s) ws[cellRef].s = {};
-      ws[cellRef].s.font = { bold: true };
-    });
+    const headers = data.length > 0 ? Object.keys(data[0] || {}) : [];
 
-    // Append the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    const buffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const processNextChunk = (startIndex) => {
+      // Post progress update
+      self.postMessage({
+        type: 'progress',
+        processed: Math.min(startIndex, totalRows),
+        total: totalRows
+      });
 
-    const blob = new Blob([buffer], { type: "application/octet-stream" });
-    postMessage(blob);
+      if (startIndex >= totalRows) {
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        const buffer = XLSX.write(wb, {
+          bookType: "xlsx",
+          type: "array",
+          compression: true
+        });
+
+        const blob = new Blob([buffer], { type: "application/octet-stream" });
+        postMessage({ type: 'complete', data: blob });
+
+        wb = null;
+        ws = null;
+        return;
+      }
+
+      const endIndex = Math.min(startIndex + CHUNK_SIZE, totalRows);
+      const chunk = data.slice(startIndex, endIndex);
+
+      try {
+        if (startIndex === 0) {
+          ws = XLSX.utils.json_to_sheet(chunk, {
+            cellStyles: true,
+            sheetStubs: true,
+            bookVBA: true,
+            cellDates: true,
+          });
+
+          if (headers.length > 0) {
+            headers.forEach((header, index) => {
+              const cellRef = XLSX.utils.encode_cell({ c: index, r: 0 });
+              if (!ws[cellRef]) return;
+              if (!ws[cellRef].s) ws[cellRef].s = {};
+              ws[cellRef].s.font = { bold: true };
+            });
+          }
+        } else {
+          XLSX.utils.sheet_add_json(ws, chunk, {
+            skipHeader: true,
+            origin: -1
+          });
+        }
+
+        // Schedule next chunk processing with a small delay to allow UI updates
+        setTimeout(() => processNextChunk(endIndex), 0);
+      } catch (error) {
+        // Handle errors
+        postMessage({
+          type: 'error',
+          message: error.message || 'Error processing data'
+        });
+      }
+    };
+
+
+    processNextChunk(0);
   });
 };

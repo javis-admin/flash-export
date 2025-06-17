@@ -23,6 +23,7 @@ const FlashExport = ({
   showPercentage = true,
   customProgressComponent,
   cancelBtnDisable = false,
+  onError,
   children,
 }) => {
   const [processing, setProcessing] = React.useState(false);
@@ -33,7 +34,7 @@ const FlashExport = ({
 
   React.useEffect(() => {
     const myWorker = new WebWorker(workerObj);
-    myWorker.addEventListener("message", (event) => handleDownload(event.data));
+    myWorker.addEventListener("message", handleWorkerMessage);
     worker.current = myWorker;
   }, []);
 
@@ -43,25 +44,38 @@ const FlashExport = ({
     };
   }, []);
 
+  const handleWorkerMessage = (event) => {
+    const message = event.data;
+
+    if (message.type === 'progress') {
+      const percentage = Math.floor((message.processed / message.total) * 80);
+      setProgress(percentage);
+    } else if (message.type === 'complete') {
+      handleDownload(message.data);
+    } else if (message.type === 'error') {
+      // Handle error from worker
+      setProgress(101); // Set progress to error state
+      if (onError && typeof onError === 'function') {
+        onError(message.message);
+      } else {
+        console.error('Export error:', message.message);
+      }
+      setProcessing(false);
+    } else {
+      handleDownload(message);
+    }
+  };
+
   const handleClick = () => {
     setProcessing(true);
     worker.current.postMessage({ multiDataset });
     setProgress(0);
-    const id = setInterval(() => {
-      setProgress((prevProgress) => {
-        const newProgress = prevProgress + 5;
-        if (newProgress >= 80) {
-          clearInterval(id);
-        }
-        return newProgress;
-      });
-    }, 300);
   };
 
   const handleTerminate = () => {
     worker.current.terminate();
     const myWorker = new WebWorker(workerObj);
-    myWorker.addEventListener("message", (event) => handleDownload(event.data));
+    myWorker.addEventListener("message", handleWorkerMessage);
     worker.current = myWorker;
     setProgress(0);
     setProcessing(false);
@@ -121,8 +135,8 @@ const FlashExport = ({
             progress === 100
               ? "success"
               : progress === 101
-              ? "exception"
-              : "active"
+                ? "exception"
+                : "active"
           }
         />
       )}
