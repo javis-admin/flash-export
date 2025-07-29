@@ -1,5 +1,5 @@
 export const validateAndReturnData = (key, val, substituteValues) => {
-  if (val === null || val === "-") return "";
+  if (val === null || val === "-" || val.trim() === "--") return "";
   if (key === "rowud") {
     if (val.indexOf(".") === -1) return val;
     return val.substring(0, val.indexOf(".")).replace("T", " ");
