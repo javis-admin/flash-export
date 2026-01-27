@@ -91,8 +91,14 @@ const FlashExport = ({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    setProcessing(false);
-    setProgress(0);
+    // React 18 was batching the updates and at the end of the function processing = false and progress = 0
+    // therefore due to the checks in the JSX we were not seeing progress = 100
+    // Wait for browser to paint the 100% state before resetting
+    // flushSync was also not working - this is specially used for making state updates synchronous
+    setTimeout(() => {
+      setProcessing(false);
+      setProgress(0);
+    }, 0);
   };
 
   if (!processing) {
